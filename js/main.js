@@ -4,32 +4,51 @@
   const hotspots = document.querySelectorAll(".Hotspot");
   const materialTemplate = document.querySelector("#material-template");
   const materialList = document.querySelector("#material-list");
+   const loader = document.querySelector("#loader");
 
   //This information needs to be removed then pulled with an AJAX Call using the Fetch API
   //this is the api url https://swiftpixel.com/earbud/api/materials"
 
-  const materialListData = [
-    {
-      heading: "Precision-Crafted Polymers",
-      description: "Our earbuds are meticulously molded from high-quality plastics, ensuring a blend of elegance, comfort, and resilience that's second to none."
-    },
-    {
-      heading: "Luxurious Silicone Harmony",
-      description: "Our uniquely engineered ear tips are cocooned in plush silicone, delivering an opulent embrace for your ears, ensuring an unrivaled fit and exquisite audio experience."
-    },
-    {
-      heading: "Rubberized Cables",
-      description: "Experience the unparalleled freedom of movement with our flexible rubber cables that promise durability without compromise."
-    },
-    {
-      heading: "Enhanced Comfort Sensors",
-      description: "A touch of magic in the form of built-in microphones and sensors empowers your earbuds to obey your every command, making your audio journey seamless and enchanting."
-    },
-    {
-      heading: "Artistic Mesh Guard",
-      description: "Shielded by artful mesh screens, our speakers remain untarnished, keeping your listening experience pristine."
+
+    function getData() {
+        loader.classList.toggle("hidden");
+        fetch("https://swiftpixel.com/earbud/api/materials")
+        .then(response => response.json())
+        .then(materialList => {
+            console.log(materialList);
+
+            const ul = document.createElement("ul");
+            ul.id = "material-list";
+
+            materialList.results.forEach(result =>{
+                const li = document.createElement("li");
+
+                const h2 = document.createElement("h2");
+                h2.textContent = `${result.name.first} ${result.name.last}`;
+                // h2.textContent = result.name.first + " " + result.name.last;
+
+                const p = document.createElement("p");
+                p.textContent = result.email;
+
+                li.appendChild(h2);
+                li.appendChild(p);
+
+                ul.appendChild(li);
+            })
+            loader.classList.toggle("hidden");
+            materialTemplate.appendChild(ul);
+        })
+        .catch(error=>{
+            console.log(error);
+            // const errorMessage = document.createElement("p");
+            // errorMessage.textContent = "Oops something went wrong. It may be your internet connection or it might be us. Please try again later.";
+            // materialTemplate.appendChild(errorMessage);
+
+            materialTemplate.innerHTML = `<p>Oops something went wrong. It may be your internet connection or it might be us. Please try again later.</p>`;
+        })
     }
-  ];
+
+    getData();
 
   //functions
   function loadInfoBoxes() {
